@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .button {
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .healthcheck {background-color: #4CAF50;} /* Green */
+        .helloworld {background-color: #008CBA;} /* Blue */
+    </style>
+    <title>Basic frontend</title>
+</head>
+<body>
+<h1>Make a request to basic-api</h1>
+<h2>Please choose the method you want to use:</h2>
+<button onclick="handleClick('health')" class="button healthcheck">healthcheck</button>
+<button onclick="handleClick('helloworld')" class="button helloworld">helloworld</button>
+<p>Documentation: <a href="https://aws-lab.cf/basic-api/docs" target="_blank">https://aws-lab.cf/basic-api/docs</a></p>
+<h2>Response from basic-api:</h2>
+<p id="apiresponse"></p>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    function handleClick(method){
+        // https://gist.github.com/fgilio/230ccd514e9381fafa51608fcf137253
+        var api_url = `https://aws-lab.cf/basic-api/${arguments[0]}`
+        axios.get(api_url)
+            .then((response) => {
+                // Success 🎉
+                var element = document.getElementById("apiresponse");
+                element.innerHTML = JSON.stringify(response.data);
+            })
+            .catch((error) => {
+                // Error 😨
+                if (error.response) {
+                    /*
+                    * The request was made and the server responded with a
+                    * status code that falls out of the range of 2xx
+                    */
+                    var element = document.getElementById("apiresponse");
+                    element.innerHTML = JSON.stringify(error.response.data);
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    /*
+                    * The request was made but no response was received, `error.request`
+                    * is an instance of XMLHttpRequest in the browser and an instance
+                    * of http.ClientRequest in Node.js
+                    */
+                    console.log(error.request);
+                    var element = document.getElementById("apiresponse");
+                    element.innerHTML = JSON.stringify(error.request);
+                } else {
+                    // Something happened in setting up the request and triggered an Error
+                    console.log('Error', error.message);
+                    var element = document.getElementById("apiresponse");
+                    element.innerHTML = JSON.stringify(error.message);
+                }
+                console.log(error.config);
+            });
+    }
+</script>
+</body>
+</html>
